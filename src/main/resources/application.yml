@@ -1,0 +1,40 @@
+# Server configuration
+server:
+  port: 8080
+
+# Spring Boot Configuration
+spring:
+  # === SQL SERVER DATASOURCE CONFIGURATION ===
+  datasource:
+    url: jdbc:sqlserver://Admin1\SQLEXPRESS;databaseName=TaskMgtJavaDB;integratedSecurity=true;trustServerCertificate=true
+  
+  # === FLYWAY MIGRATION CONFIGURATION ===
+  flyway:
+    enabled: true # This is the default, but good to have.
+    # Flyway will automatically scan 'classpath:db/migration'
+    
+  # === JPA (HIBERNATE) CONFIGURATION ===
+  jpa:
+    hibernate:
+      # CRITICAL: Disable Hibernate's DDL management. Let Flyway handle it.
+      # 'validate' will check if your @Entity classes match the tables Flyway created.
+      ddl-auto: validate
+    # This property is not needed, Spring Boot detects the dialect.
+    # database-platform: org.hibernate.dialect.SQLServerDialect
+    show-sql: true
+
+# Swagger/OpenAPI Documentation configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    # Use dot notation for packages, not brackets
+    com.taskmanagementbackend.taskmgtappv1: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
