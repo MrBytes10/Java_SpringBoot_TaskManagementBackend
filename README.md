@@ -18,12 +18,84 @@ This is a Java 21 backend for managing tasks, built with Spring Boot. It include
 
 - **Java 21**
 - **Spring Boot 3.2+**
-- **Spring Security + JWT**
-- **Spring Data JPA + Hibernate**
+- **Spring Security**
+- **JWT:** Enables stateless, scalable authentication.
+- **BCrypt:** Provides strong password hashing for user security.
+- **Spring Data JPA/Hibernate:** Simplifies database access and migrations.
 - **SQL Server** (configured by default)
 - **Maven** for builds
 - **Lombok** to reduce boilerplate
-- **Swagger/OpenAPI** for API docs
+- **Swagger:** Automatically documents the API for easy testing and integration.
+
+
+## 🗄️ Database Schema
+
+The application uses two main tables: `users` and `tasks`.
+
+### users
+
+| Column      | Type             | Constraints                | Description                |
+|-------------|------------------|----------------------------|----------------------------|
+| id          | UNIQUEIDENTIFIER | PRIMARY KEY                | User’s unique ID           |
+| email       | NVARCHAR(255)    | NOT NULL, UNIQUE           | User’s email address       |
+| password    | NVARCHAR(255)    | NOT NULL                   | BCrypt-hashed password     |
+| name        | NVARCHAR(100)    |                            | User’s display name        |
+| created_at  | DATETIME2        | NOT NULL, DEFAULT GETDATE()| Account creation timestamp |
+
+### tasks
+
+| Column      | Type             | Constraints                | Description                |
+|-------------|------------------|----------------------------|----------------------------|
+| id          | UNIQUEIDENTIFIER | PRIMARY KEY                | Task’s unique ID           |
+| user_id     | UNIQUEIDENTIFIER | NOT NULL, FK to users(id)  | Owner of the task          |
+| title       | NVARCHAR(255)    | NOT NULL                   | Task title                 |
+| description | NVARCHAR(1000)   |                            | Task details               |
+| status      | NVARCHAR(20)     | NOT NULL, DEFAULT 'TODO'   | Task status (TODO, etc.)   |
+| created_at  | DATETIME2        | NOT NULL, DEFAULT GETDATE()| Task creation timestamp    |
+| updated_at  | DATETIME2        |                            | Last update timestamp      |
+
+- Each task is linked to a user via `user_id`.
+- Deleting a user will cascade and delete their tasks.
+
+---
+
+## 🔒 Security & Authentication
+
+- **JWT Authentication:** All endpoints (except `/api/auth/**` and Swagger docs) require a valid JWT token.
+- **Password Storage:** User passwords are securely hashed using BCrypt.
+- **Stateless Sessions:** The backend does not use server-side sessions; all authentication is stateless via JWT.
+- **Authorization:** All authenticated users have the same access level (no roles implemented yet).
+
+---
+
+## 🧩 Maintainability & Scalability
+
+- **Layered Architecture:** The codebase is organized into controllers, services, repositories, and DTOs for clear separation of concerns.
+- **Interfaces:** Service interfaces (`IAuthService`, `ITaskService`) allow for easy extension and testing.
+- **DTOs:** Data Transfer Objects decouple internal models from API contracts, making it easier to evolve the API.
+- **SOLID Principles:** The code follows SOLID principles for maintainability and extensibility.
+
+---
+
+
+---
+
+## 📚 API Overview
+
+| Endpoint                | Method | Description                        | Auth Required |
+|-------------------------|--------|------------------------------------|--------------|
+| `/api/auth/signup`      | POST   | Register a new user                | No           |
+| `/api/auth/signin`      | POST   | Authenticate and get JWT           | No           |
+| `/api/tasks`            | GET    | List all tasks for current user    | Yes          |
+| `/api/tasks`            | POST   | Create a new task                  | Yes          |
+| `/api/tasks/{id}`       | GET    | Get a specific task                | Yes          |
+| `/api/tasks/{id}`       | PUT    | Update a task                      | Yes          |
+| `/api/tasks/{id}`       | DELETE | Delete a task                      | Yes          |
+
+- All `/api/tasks` endpoints require a valid JWT in the `Authorization: Bearer <token>` header.
+
+---
+
 
 ---
 
@@ -77,13 +149,6 @@ Use `/signup` to register and `/signin` to log in. The response contains a JWT t
 
 ---
 
-## 🧪 Testing
-
-You can run unit tests with:
-
-```bash
-mvn test
-```
 
 ---
 
@@ -96,6 +161,10 @@ mvn test
 - **DIP**: High-level services depend on abstractions, injected via constructor injection.
 
 ---
+## 🚀 Extending the App
+
+- The modular structure and use of interfaces make it easy to add new features (e.g., new task fields, additional endpoints) without major refactoring.
+- To add new user properties or task features, update the model, DTO, and migration scripts accordingly.
 
 ## 📄 License
 

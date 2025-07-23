@@ -43,7 +43,7 @@ public class SecurityConfig {
             // Disable CSRF as we are using stateless JWT authentication
             .csrf(csrf -> csrf.disable())
             
-            // Set session management to stateless
+            // Set session management to stateless, because we are using JWT, which is stateless
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
             // Handle authentication errors with a custom entry point
