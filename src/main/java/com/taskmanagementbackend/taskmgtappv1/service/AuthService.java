@@ -1,7 +1,10 @@
+/// B:\mytestProjects\JavaPROJECTS\TaskMngtAppBackend\taskmgtappv1\src\main\java\com\taskmanagementbackend\taskmgtappv1\service\AuthService.java
+
 package com.taskmanagementbackend.taskmgtappv1.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder; // Import Spring Security's PasswordEncoder
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -15,7 +18,7 @@ import com.taskmanagementbackend.taskmgtappv1.model.User;
 import com.taskmanagementbackend.taskmgtappv1.repository.UserRepository;
 import com.taskmanagementbackend.taskmgtappv1.service.interfaces.IAuthService;
 import com.taskmanagementbackend.taskmgtappv1.util.JwtUtil;
-import com.taskmanagementbackend.taskmgtappv1.util.PasswordEncoder;
+//import com.taskmanagementbackend.taskmgtappv1.util.PasswordEncoder;
 
 /**
  * Implementation of the authentication service.
@@ -48,7 +51,7 @@ public class AuthService implements IAuthService {
         }
         
         // Hash the password
-        String hashedPassword = passwordEncoder.hashPassword(signUpDto.getPassword());
+        String hashedPassword = passwordEncoder.encode(signUpDto.getPassword());
         
         // Create new user
         User user = new User(signUpDto.getEmail(), hashedPassword, signUpDto.getName());

@@ -36,25 +36,26 @@ This project is a complete backend application for a Task Management system, bui
 
 ### Running the Application
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <your-repository-url>
-    cd task-management-backend
-    ```
+1. **Clone the repository:**
 
-2.  **Configure the application:**
-    The application is configured to use an in-memory H2 database by default. You can access the H2 console at `http://localhost:8080/h2-console` with the following settings from `application.yml`:
-    - **Driver Class**: `org.h2.Driver`
-    - **JDBC URL**: `jdbc:h2:mem:taskmgt_db`
-    - **User Name**: `sa`
-    - **Password**: (leave blank)
+   ```bash
+   git clone <your-repository-url>
+   cd task-management-backend
+   ```
+2. **Configure the application:**
+   The application is configured to use an in-memory H2 database by default. You can access the H2 console at `http://localhost:8080/h2-console` with the following settings from `application.yml`:
 
-    If you wish to use PostgreSQL, comment out the H2 configuration in `src/main/resources/application.yml` and uncomment the PostgreSQL section, filling in your database credentials.
+   - **Driver Class**: `org.h2.Driver`
+   - **JDBC URL**: `jdbc:h2:mem:taskmgt_db`
+   - **User Name**: `sa`
+   - **Password**: (leave blank)
 
-3.  **Build and run the application using Maven:**
-    ```bash
-    mvn spring-boot:run
-    ```
+   If you wish to use PostgreSQL, comment out the H2 configuration in `src/main/resources/application.yml` and uncomment the PostgreSQL section, filling in your database credentials.
+3. **Build and run the application using Maven:**
+
+   ```bash
+   mvn spring-boot:run
+   ```
 
 The application will start on `http://localhost:8080`.
 
@@ -62,7 +63,6 @@ The application will start on `http://localhost:8080`.
 
 The API documentation is available via Swagger UI at:
 **`http://localhost:8080/swagger-ui.html`**
-
 
 ## SOLID Principles in This Project
 
@@ -72,38 +72,38 @@ This project was built with the SOLID principles in mind to create a maintainabl
 
 *A class should have only one reason to change.*
 
--   **`TaskService`**: Its sole responsibility is to handle the business logic related to tasks (creating, updating, etc.). It does not deal with HTTP requests or database queries directly.
--   **`AuthController`**: Its only job is to handle incoming HTTP requests for authentication (`/signup`, `/signin`), validate them, and delegate the work to the `AuthService`.
--   **`JwtUtil`**: This class is exclusively responsible for JWT-related operations like creating, validating, and extracting claims from tokens.
+- **`TaskService`**: Its sole responsibility is to handle the business logic related to tasks (creating, updating, etc.). It does not deal with HTTP requests or database queries directly.
+- **`AuthController`**: Its only job is to handle incoming HTTP requests for authentication (`/signup`, `/signin`), validate them, and delegate the work to the `AuthService`.
+- **`JwtUtil`**: This class is exclusively responsible for JWT-related operations like creating, validating, and extracting claims from tokens.
 
 ### O - Open/Closed Principle (OCP)
 
 *Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification.*
 
--   **Service Interfaces (`ITaskService`, `IAuthService`)**: We code against interfaces in our controllers. This means we can introduce new implementations of these services without changing the controller code. For example, we could create a `PremiumTaskService` that implements `ITaskService` with additional features, and Spring's Dependency Injection could swap it in without modifying `TaskController`.
--   **Spring Security Configuration**: The use of filters like `JwtAuthenticationFilter` allows us to extend the security chain with new behavior without altering the core Spring Security classes.
+- **Service Interfaces (`ITaskService`, `IAuthService`)**: We code against interfaces in our controllers. This means we can introduce new implementations of these services without changing the controller code. For example, we could create a `PremiumTaskService` that implements `ITaskService` with additional features, and Spring's Dependency Injection could swap it in without modifying `TaskController`.
+- **Spring Security Configuration**: The use of filters like `JwtAuthenticationFilter` allows us to extend the security chain with new behavior without altering the core Spring Security classes.
 
 ### L - Liskov Substitution Principle (LSP)
 
 *Subtypes must be substitutable for their base types.*
 
--   While this project does not feature complex inheritance hierarchies, the principle is respected by Spring's design. For instance, `JpaRepository` is an interface with multiple implementations. We can rely on the contract of `JpaRepository` regardless of the underlying database or implementation, knowing that methods like `save()` and `findById()` will behave as expected.
+- While this project does not feature complex inheritance hierarchies, the principle is respected by Spring's design. For instance, `JpaRepository` is an interface with multiple implementations. We can rely on the contract of `JpaRepository` regardless of the underlying database or implementation, knowing that methods like `save()` and `findById()` will behave as expected.
 
 ### I - Interface Segregation Principle (ISP)
 
 *No client should be forced to depend on methods it does not use.*
 
--   **`IAuthService` and `ITaskService`**: We have separate interfaces for authentication and task management. A client like `TaskController` only needs a dependency on `ITaskService` and has no knowledge of the methods in `IAuthService`. This prevents a "fat" interface with unrelated methods and ensures clients only depend on what they need.
+- **`IAuthService` and `ITaskService`**: We have separate interfaces for authentication and task management. A client like `TaskController` only needs a dependency on `ITaskService` and has no knowledge of the methods in `IAuthService`. This prevents a "fat" interface with unrelated methods and ensures clients only depend on what they need.
 
 ### D - Dependency Inversion Principle (DIP)
 
 *High-level modules should not depend on low-level modules. Both should depend on abstractions (e.g., interfaces). Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.*
 
--   **Constructor Injection**: This is the most prominent example of DIP in the project. High-level modules like `TaskService` do not depend on a concrete `TaskRepositoryImpl`, but on the `TaskRepository` interface (the abstraction).
-    ```java
-    // TaskService (high-level) depends on TaskRepository (abstraction)
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-    ```
--   Spring's **Inversion of Control (IoC)** container is responsible for creating the concrete implementation of `TaskRepository` and "injecting" it into `TaskService` at runtime. This decouples our components, making the system easier to test and maintain.
+- **Constructor Injection**: This is the most prominent example of DIP in the project. High-level modules like `TaskService` do not depend on a concrete `TaskRepositoryImpl`, but on the `TaskRepository` interface (the abstraction).
+  ```java
+  // TaskService (high-level) depends on TaskRepository (abstraction)
+  public TaskService(TaskRepository taskRepository) {
+      this.taskRepository = taskRepository;
+  }
+  ```
+- Spring's **Inversion of Control (IoC)** container is responsible for creating the concrete implementation of `TaskRepository` and "injecting" it into `TaskService` at runtime. This decouples our components, making the system easier to test and maintain.
