@@ -47,12 +47,28 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-sqlserver</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc_auth</artifactId>
-            <version>12.6.1.jre11</version>
-            <scope>runtime</scope>
-        </dependency>
+      <!--
+REMOVE THIS BLOCK:
+
+<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc_auth</artifactId>
+    <version>12.4.2.jre11</version>
+    <scope>runtime</scope>
+</dependency>
+-->
+
+<!-- 
+ADD THIS CORRECTED BLOCK INSTEAD:
+
+This uses the standard artifactId and specifies the 'auth' package
+via the classifier, which is the correct way to handle this.
+-->
+<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <scope>runtime</scope>
+</dependency>
         
         <!-- REMOVED: H2 and MySQL drivers to avoid confusion -->
         <!-- <dependency><groupId>com.h2database</groupId>...</dependency> -->
