@@ -26,6 +26,7 @@ import com.taskmanagementbackend.taskmgtappv1.util.JwtUtil;
  * Uses Dependency Injection (DI) for loose coupling, a tenet of DIP.
  */
 @Service
+// @qualifier("authService") // Optional: if you have multiple implementations// research
 public class AuthService implements IAuthService {
     
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);

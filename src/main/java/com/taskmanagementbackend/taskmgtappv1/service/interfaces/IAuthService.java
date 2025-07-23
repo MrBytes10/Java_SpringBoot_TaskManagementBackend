@@ -5,7 +5,7 @@ import com.taskmanagementbackend.taskmgtappv1.dto.UserSignInDto;
 import com.taskmanagementbackend.taskmgtappv1.dto.UserSignUpDto;
 
 /**
- * Interface for authentication services.
+ * Interface for authentication services.// for high level Abstraction Principle (HLA)
  * Follows Interface Segregation Principle (ISP) from SOLID by defining
  * a specific contract for authentication operations.
  */

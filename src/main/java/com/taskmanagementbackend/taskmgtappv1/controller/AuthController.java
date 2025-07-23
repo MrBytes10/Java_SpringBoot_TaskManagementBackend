@@ -20,7 +20,7 @@ import jakarta.validation.Valid;
  * Controller for handling user authentication (Sign Up and Sign In).
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth") // version all apis
 public class AuthController {
     
     private final IAuthService authService;
